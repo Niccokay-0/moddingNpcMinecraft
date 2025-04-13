@@ -68,7 +68,6 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
             this.addRenderableWidget(button);
         }
 
-        // Zoom buttons and arrow buttons remain unchanged...
     }
 
     private void updateButtonHighlight() {
@@ -114,8 +113,6 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
                 graphics.drawString(this.font, Component.literal("Happiness: 83%"), 20, 70, 0xFFFFFF);
                 graphics.drawString(this.font, Component.literal("Population: 154"), 20, 85, 0xFFFFFF);
 
-                // Villager-like entries
-                // Placeholder mockup, actual GUI drawing would depend on rendering NPCs
                 graphics.drawString(this.font, Component.literal("[NPC Face] Eldric - Farmer - Happy"), 20, 110, 0xAAAAAA);
                 graphics.drawString(this.font, Component.literal("[NPC Face] Lyra - Guard - Neutral"), 20, 125, 0xAAAAAA);
             }

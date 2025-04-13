@@ -1,4 +1,4 @@
-package net.nic.npc.init;
+package net.nic.npc.initentities;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;

@@ -21,7 +21,7 @@ import net.nic.npc.block.ModBlocks;
 import net.nic.npc.client.renderer.NpcCitizenRenderer;
 import net.nic.npc.creativetabs.ModCreativeModeTabs;
 import net.nic.npc.entity.EntityNpcCitizen;
-import net.nic.npc.init.ModEntities;
+import net.nic.npc.initentities.ModEntities;
 import net.nic.npc.item.ModItems;
 import net.nic.npc.menu.ModMenus;
 import net.nic.npc.screen.CommandingTableScreen;

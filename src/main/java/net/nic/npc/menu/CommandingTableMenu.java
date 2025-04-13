@@ -9,16 +9,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class CommandingTableMenu extends AbstractContainerMenu {
 
-
-
     public CommandingTableMenu(int containerId, Inventory playerInventory) {
         super(ModMenus.COMMAND_TABLE_MENU.get(), containerId);
 
-        // Offsets to place the player inventory in bottom-left corner
+        // bottom-left corner
         int xOffset = 10;
-        int yOffset = 280; // adjust if needed depending on screen height
+        int yOffset = 280;
 
-        // Player inventory (3 rows of 9)
+        //player inv
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
                 this.addSlot(new Slot(playerInventory, col + row * 9 + 9,
@@ -27,7 +25,7 @@ public class CommandingTableMenu extends AbstractContainerMenu {
             }
         }
 
-        // Hotbar (1 row of 9)
+        // hotbarrr
         for (int col = 0; col < 9; ++col) {
             this.addSlot(new Slot(playerInventory, col,
                     xOffset + col * 18,
@@ -37,11 +35,11 @@ public class CommandingTableMenu extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
-        return ItemStack.EMPTY; // Implement shift-click behavior later
+        return ItemStack.EMPTY;
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return true; // Always valid for now, change for range-based logic
+        return true; // Always valid for now
     }
 }
