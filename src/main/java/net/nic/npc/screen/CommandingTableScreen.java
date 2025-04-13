@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.nic.npc.entity.NpcCitizen;
 import net.nic.npc.menu.CommandingTableMenu;
 import net.nic.npc.NpcMain;
 
@@ -113,8 +114,22 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
                 graphics.drawString(this.font, Component.literal("Happiness: 83%"), 20, 70, 0xFFFFFF);
                 graphics.drawString(this.font, Component.literal("Population: 154"), 20, 85, 0xFFFFFF);
 
-                graphics.drawString(this.font, Component.literal("[NPC Face] Eldric - Farmer - Happy"), 20, 110, 0xAAAAAA);
-                graphics.drawString(this.font, Component.literal("[NPC Face] Lyra - Guard - Neutral"), 20, 125, 0xAAAAAA);
+                List<NpcCitizen> citizens = NpcCitizen.getRegisteredCitizens();
+                int yOffset = 110;
+                for (NpcCitizen citizen : citizens) {
+                    String line = String.format(
+                            "%s %s - %s - %s - %s",
+                            citizen.getFName(),            // first name
+                            citizen.getSName(),                     // surname (you'll need to add this method)
+                            citizen.getProfession(),                  // e.g., Farmer
+                            citizen.getHappiness(),        // e.g., Happy
+                            citizen.getGender()                       // e.g., Male/Female
+                    );
+
+                    graphics.drawString(this.font, Component.literal(line), 20, yOffset, 0xAAAAAA);
+                    yOffset += 15;
+                }
+
             }
             case 1 -> {
                 // Food

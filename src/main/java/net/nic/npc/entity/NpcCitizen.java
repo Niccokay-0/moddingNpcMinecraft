@@ -6,7 +6,10 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.*;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -14,27 +17,31 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.nic.npc.block.ModBlocks;
-import net.nic.npc.entity.ai.goal.GoToSpecialBlockGoal;
-import net.nic.npc.menu.RecruitMenu;
-import net.nic.npc.screen.RecruitScreen;
 import org.jetbrains.annotations.Nullable;
 
-public class EntityNpcCitizen extends PathfinderMob {
+import java.util.ArrayList;
+import java.util.List;
+
+public class NpcCitizen extends PathfinderMob {
 
     public boolean recruitable = false;
 
-    private static final EntityDataAccessor<String> DATA_NAME = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<String> DATA_SURNAME = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<String> DATA_GENDER = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<String> DATA_PROFESSION = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Float> DATA_HAPPINESS = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.FLOAT);
+    public static final List<NpcCitizen> REGISTERED_CITIZENS = new ArrayList<>();
 
-    public EntityNpcCitizen(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
+
+    private static final EntityDataAccessor<String> DATA_NAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_SURNAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_GENDER = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> DATA_PROFESSION = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> DATA_HAPPINESS = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.FLOAT);
+
+    public NpcCitizen(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setPersistenceRequired();
     }
+
+
 
     @Override
     protected void registerGoals() {
@@ -44,7 +51,6 @@ public class EntityNpcCitizen extends PathfinderMob {
         this.goalSelector.addGoal(1, new RandomStrollGoal(this, 1.0D)); // Wander randomly
         this.goalSelector.addGoal(2, new RandomLookAroundGoal(this)); // Randomly look around
 
-        this.goalSelector.addGoal(3, new GoToSpecialBlockGoal(this, ModBlocks.COMMANDING_TABLE.get(), 1.0f, 40));
 
         this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 6.0F)); // Look at nearby players
         // New AI goals
@@ -55,22 +61,6 @@ public class EntityNpcCitizen extends PathfinderMob {
 
     }
 
-    @Override
-    protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        if (!pPlayer.level().isClientSide()) {
-            MenuProvider provider = new SimpleMenuProvider(
-                    (containerId, playerInventory, player) ->
-                            new RecruitMenu(containerId, playerInventory),
-                    Component.translatable("npc.gui.npc_recruit_gui")
-
-            );
-            RecruitScreen.getNpc(this);
-            pPlayer.openMenu(provider);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-
     public static AttributeSupplier.Builder createAttributes() {
         return PathfinderMob.createMobAttributes()
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
@@ -78,6 +68,31 @@ public class EntityNpcCitizen extends PathfinderMob {
                 .add(Attributes.FOLLOW_RANGE, 16.0D);
 
     }
+
+    public void setName(String name) {
+        this.entityData.set(DATA_NAME, name);
+    }
+
+    public void setSurname(String surname) {
+        this.entityData.set(DATA_SURNAME, surname);
+    }
+
+    public void setGender(String gender) {
+        this.entityData.set(DATA_GENDER, gender);
+    }
+
+    public void setTextureVariant(int variant) {
+        this.entityData.set(DATA_VARIANT, variant);
+    }
+
+    public void setProfession(String profession) {
+        this.entityData.set(DATA_PROFESSION, profession);
+    }
+
+    public void setHappiness(float happiness) {
+        this.entityData.set(DATA_HAPPINESS, happiness);
+    }
+
 
     @Nullable
     @Override
@@ -129,9 +144,9 @@ public class EntityNpcCitizen extends PathfinderMob {
 
         String returnName = "";
 
-        if (gender == "Male")    {
+        if (gender.equals("Male"))    {
             returnName = maleNames[getRandom().nextInt(maleNames.length)];
-        } else if (gender == "Female")   {
+        } else if (gender.equals("Female"))   {
             returnName = femaleNames[getRandom().nextInt(maleNames.length)];
         }
         return returnName;
@@ -141,6 +156,7 @@ public class EntityNpcCitizen extends PathfinderMob {
         String[] surnames = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy", "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey", "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson", "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza", "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers", "Long", "Ross", "Foster", "Jimenez", "Powell", "Jenkins", "Perry", "Russell", "Sullivan", "Bell", "Coleman", "Butler", "Henderson", "Barnes", "Gonzales", "Fisher", "Vasquez", "Simmons", "Romero", "Jordan", "Patterson", "Alexander", "Hamilton", "Graham", "Reynolds", "Griffin", "Wallace", "Moreno", "West", "Cole", "Hayes", "Bryant", "Herrera", "Gibson", "Ellis", "Tran", "Medina", "Aguilar", "Stevens", "Murray", "Ford", "Castro", "Marshall", "Owens", "Harrison", "Fernandez", "Mcdonald", "Woods", "Washington", "Kennedy", "Wells", "Vargas", "Henry", "Chen", "Freeman", "Webb", "Tucker", "Guzman", "Burns", "Crawford", "Olson", "Simpson", "Porter", "Hunter", "Gordon", "Mendez", "Silva", "Shaw", "Snyder", "Mason", "Dixon", "Munoz", "Hunt", "Hicks", "Holmes", "Palmer", "Wagner", "Black", "Robertson", "Boyd", "Rose", "Stone", "Salazar", "Fox", "Warren", "Mills", "Meyer", "Rice", "Schmidt", "Garza", "Daniels", "Ferguson", "Nichols", "Stephens", "Soto", "Weaver", "Ryan", "Gardner", "Payne", "Grant", "Dunn", "Kelley", "Spencer", "Hawkins", "Arnold", "Pierce", "Vega", "Hansen", "Peters"};
         return surnames[getRandom().nextInt(surnames.length)];
     }
+
 
     private String pickGender() {
         String[] genders = {"Male", "Female"};
@@ -186,13 +202,17 @@ public class EntityNpcCitizen extends PathfinderMob {
         return 0xFFFFFF;
     }
 
+    public int getProfessionColor(String string) {
+
+      return 0xD3D3D3;
+    }
     public int getGenderColor(String gender) {
 
         if (gender.equals("Male")) {
             return 0x0000FF;
         }
         if (gender.equals("Female")) {
-            return 0xFFC0CB;
+            return 0xFF8DA1;
         }
         else return 0xFFFFFF;
     }
@@ -244,4 +264,23 @@ public class EntityNpcCitizen extends PathfinderMob {
 
     }
 
+    @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
+        if (!this.level().isClientSide && !REGISTERED_CITIZENS.contains(this)) {
+            REGISTERED_CITIZENS.add(this);
+        }
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+        REGISTERED_CITIZENS.remove(this);
+    }
+
+    public static List<NpcCitizen> getRegisteredCitizens() {
+        return REGISTERED_CITIZENS;
+    }
+
 }
+

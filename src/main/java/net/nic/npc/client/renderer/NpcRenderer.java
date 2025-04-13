@@ -6,17 +6,16 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.nic.npc.NpcMain;
+import net.nic.npc.entity.EntityNpc;
 
-import net.nic.npc.entity.NpcCitizen;
+public class NpcRenderer extends MobRenderer<EntityNpc, HumanoidModel<EntityNpc>> {
 
-public class NpcCitizenRenderer extends MobRenderer<NpcCitizen, HumanoidModel<NpcCitizen>> {
-
-    public NpcCitizenRenderer(EntityRendererProvider.Context context) {
+    public NpcRenderer(EntityRendererProvider.Context context) {
         super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM)), 0.5f);
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_INNER_ARMOR)),
@@ -26,7 +25,7 @@ public class NpcCitizenRenderer extends MobRenderer<NpcCitizen, HumanoidModel<Np
     }
 
     @Override
-    public ResourceLocation getTextureLocation(NpcCitizen entity) {
+    public ResourceLocation getTextureLocation(EntityNpc entity) {
         int textureValue = entity.getTextureVariant();
         String gender = entity.getGender();
 
@@ -41,7 +40,7 @@ public class NpcCitizenRenderer extends MobRenderer<NpcCitizen, HumanoidModel<Np
     }
 
     @Override
-    protected boolean shouldShowName(NpcCitizen entity) {
+    protected boolean shouldShowName(EntityNpc entity) {
         // Only show the name if the player is looking at the entity
         if (this.entityRenderDispatcher.crosshairPickEntity == entity) {
             return true;
@@ -50,7 +49,7 @@ public class NpcCitizenRenderer extends MobRenderer<NpcCitizen, HumanoidModel<Np
     }
 
     @Override
-    protected void renderNameTag(NpcCitizen entity, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTicks) {
+    protected void renderNameTag(EntityNpc entity, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTicks) {
         if (this.shouldShowName(entity)) {
             super.renderNameTag(entity, Component.literal(entity.getFullName()), poseStack, bufferSource, packedLight, partialTicks);
         }

@@ -14,7 +14,7 @@ public class ModItems {
             DeferredRegister.create(ForgeRegistries.ITEMS, NpcMain.MOD_ID);
 
 
-    public static final RegistryObject<Item> NPC_SPAWN_EGG = ITEMS.register("npc_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.NPC_CITIZEN,1,1,new Item.Properties()));
+    public static final RegistryObject<Item> NPC_SPAWN_EGG = ITEMS.register("npc_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.NPC,1,1,new Item.Properties()));
 
 
     public static void register(IEventBus eventBus) {

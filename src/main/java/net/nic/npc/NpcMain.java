@@ -19,8 +19,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.nic.npc.block.ModBlocks;
 import net.nic.npc.client.renderer.NpcCitizenRenderer;
+import net.nic.npc.client.renderer.NpcRenderer;
 import net.nic.npc.creativetabs.ModCreativeModeTabs;
-import net.nic.npc.entity.EntityNpcCitizen;
+import net.nic.npc.entity.EntityNpc;
+import net.nic.npc.entity.NpcCitizen;
 import net.nic.npc.initentities.ModEntities;
 import net.nic.npc.item.ModItems;
 import net.nic.npc.menu.ModMenus;
@@ -59,7 +61,8 @@ public class NpcMain {
     public static class CommonModEvents {
         @SubscribeEvent
         public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
-            event.put(ModEntities.NPC_CITIZEN.get(), EntityNpcCitizen.createAttributes().build());
+            event.put(ModEntities.NPC.get(), EntityNpc.createAttributes().build());
+            event.put(ModEntities.NPC_CITIZEN.get(), NpcCitizen.createAttributes().build());
         }
     }
 
@@ -69,7 +72,8 @@ public class NpcMain {
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(ModMenus.COMMAND_TABLE_MENU.get(), CommandingTableScreen::new);
             MenuScreens.register(ModMenus.RECRUIT_MENU.get(), RecruitScreen::new);
-            EntityRenderers.register(ModEntities.NPC_CITIZEN.get(), (EntityRendererProvider<EntityNpcCitizen>) NpcCitizenRenderer::new);
+            EntityRenderers.register(ModEntities.NPC.get(), (EntityRendererProvider<EntityNpc>) NpcRenderer::new);
+            EntityRenderers.register(ModEntities.NPC_CITIZEN.get(), (EntityRendererProvider<NpcCitizen>) NpcCitizenRenderer::new);
         }
     }
 }

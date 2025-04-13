@@ -1,18 +1,19 @@
 package net.nic.npc.entity.ai.goal;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.PathfinderMob;
+
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.pathfinder.Path;
-import net.nic.npc.entity.EntityNpcCitizen;
+import net.nic.npc.entity.EntityNpc;
+
 
 import java.util.EnumSet;
 
 public class GoToSpecialBlockGoal extends Goal {
 
-    private final EntityNpcCitizen mob;
+    private final EntityNpc mob;
     private final Block targetBlock;
     private final double speedModifier;
     private final int searchRadius;
@@ -20,7 +21,7 @@ public class GoToSpecialBlockGoal extends Goal {
     private BlockPos destinationBlock = null;
     private Path path = null;
 
-    public GoToSpecialBlockGoal(EntityNpcCitizen mob, Block targetBlock, double speedModifier, int searchRadius) {
+    public GoToSpecialBlockGoal(EntityNpc mob, Block targetBlock, double speedModifier, int searchRadius) {
         this.mob = mob;
         this.targetBlock = targetBlock;
         this.speedModifier = speedModifier;
