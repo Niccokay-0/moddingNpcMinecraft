@@ -16,10 +16,10 @@ import net.nic.npc.entity.EntityNpcCitizen;
 public class NpcCitizenRenderer extends MobRenderer<EntityNpcCitizen, HumanoidModel<EntityNpcCitizen>> {
 
     public NpcCitizenRenderer(EntityRendererProvider.Context context) {
-        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER)), 0.5f);
+        super(context, new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM)), 0.5f);
         this.addLayer(new HumanoidArmorLayer<>(this,
-                new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
-                new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
+                new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_INNER_ARMOR)),
+                new HumanoidModel<>(context.bakeLayer(ModelLayers.PLAYER_SLIM_OUTER_ARMOR)),
                 context.getModelManager()));
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     }
@@ -27,7 +27,16 @@ public class NpcCitizenRenderer extends MobRenderer<EntityNpcCitizen, HumanoidMo
     @Override
     public ResourceLocation getTextureLocation(EntityNpcCitizen entity) {
         int textureValue = entity.getTextureVariant();
-        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/npc_citizen_" + textureValue + ".png");
+        String gender = entity.getGender();
+
+        ResourceLocation resourceLocation;
+        if ("Female".equals(gender)) {
+            resourceLocation = ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/female/npc_citizen_" + textureValue + ".png");
+        } else {
+            // Defaults to male if not explicitly female
+            resourceLocation = ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/male/npc_citizen_" + textureValue + ".png");
+        }
+
         return resourceLocation;
     }
 

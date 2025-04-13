@@ -27,10 +27,12 @@ public class EntityNpcCitizen extends PathfinderMob {
         this.setPersistenceRequired();
     }
 
-
+/*
     @Override
     protected void registerGoals() {
+
         this.goalSelector.addGoal(0, new FloatGoal(this)); // Swim if in water
+
         this.goalSelector.addGoal(1, new RandomStrollGoal(this, 1.0D)); // Wander randomly
         this.goalSelector.addGoal(2, new RandomLookAroundGoal(this)); // Randomly look around
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 6.0F)); // Look at nearby players
@@ -38,7 +40,11 @@ public class EntityNpcCitizen extends PathfinderMob {
         this.goalSelector.addGoal(4, new OpenDoorGoal(this, true)); // Open doors (if they can)
         this.goalSelector.addGoal(5, new MoveThroughVillageGoal(this, 1.0D, false, 4, () -> true)); // Walk through villages
         this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, Zombie.class, 24.0F, 2.4D, 2.1D)); // Run from zombies
+
+
     }
+
+         */
 
     public static AttributeSupplier.Builder createAttributes() {
         return PathfinderMob.createMobAttributes()
@@ -113,7 +119,7 @@ public class EntityNpcCitizen extends PathfinderMob {
     }
 
     private int pickTexture() {
-        return this.getRandom().nextInt(5) + 1;
+        return this.getRandom().nextInt(19) + 1;
     }
 
     public String getFullName() {
