@@ -27,18 +27,23 @@ public class NpcCitizenRenderer extends MobRenderer<EntityNpcCitizen, HumanoidMo
     @Override
     public ResourceLocation getTextureLocation(EntityNpcCitizen entity) {
         int textureValue = entity.getTextureVariant();
-        ResourceLocation resourceLocation =  ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/npc_citizen_" + textureValue + ".png");
+        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/npc_citizen_" + textureValue + ".png");
         return resourceLocation;
     }
 
     @Override
     protected boolean shouldShowName(EntityNpcCitizen entity) {
-        return true;
+        // Only show the name if the player is looking at the entity
+        if (this.entityRenderDispatcher.crosshairPickEntity == entity) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     protected void renderNameTag(EntityNpcCitizen entity, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTicks) {
-        // Render the entity's full name above their head
-        super.renderNameTag(entity, Component.literal(entity.getFullName()), poseStack, bufferSource, packedLight, partialTicks);
+        if (this.shouldShowName(entity)) {
+            super.renderNameTag(entity, Component.literal(entity.getFullName()), poseStack, bufferSource, packedLight, partialTicks);
+        }
     }
 }
