@@ -28,11 +28,14 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
 
     public CommandingTableScreen(CommandingTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
+
         if (menu != null) {
+
             this.mapCenter = new BlockPos(playerInventory.player.chunkPosition().getBlockX(16),
                     384,
                     playerInventory.player.chunkPosition().getBlockZ(16));
         }
+
     }
 
     @Override
