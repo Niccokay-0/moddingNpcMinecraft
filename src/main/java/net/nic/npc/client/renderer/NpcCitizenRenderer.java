@@ -33,7 +33,6 @@ public class NpcCitizenRenderer extends MobRenderer<EntityNpcCitizen, HumanoidMo
         if ("Female".equals(gender)) {
             resourceLocation = ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/female/npc_citizen_" + textureValue + ".png");
         } else {
-            // Defaults to male if not explicitly female
             resourceLocation = ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/entity/male/npc_citizen_" + textureValue + ".png");
         }
 

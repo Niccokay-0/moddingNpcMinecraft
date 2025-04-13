@@ -1,10 +1,11 @@
 package net.nic.npc.entity;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -13,21 +14,28 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.nic.npc.block.ModBlocks;
+import net.nic.npc.entity.ai.goal.GoToSpecialBlockGoal;
+import net.nic.npc.menu.RecruitMenu;
+import net.nic.npc.screen.RecruitScreen;
 import org.jetbrains.annotations.Nullable;
 
 public class EntityNpcCitizen extends PathfinderMob {
+
+    public boolean recruitable = false;
 
     private static final EntityDataAccessor<String> DATA_NAME = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_SURNAME = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_GENDER = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> DATA_VARIANT = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<String> DATA_PROFESSION = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> DATA_HAPPINESS = SynchedEntityData.defineId(EntityNpcCitizen.class, EntityDataSerializers.FLOAT);
 
     public EntityNpcCitizen(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setPersistenceRequired();
     }
 
-/*
     @Override
     protected void registerGoals() {
 
@@ -35,16 +43,33 @@ public class EntityNpcCitizen extends PathfinderMob {
 
         this.goalSelector.addGoal(1, new RandomStrollGoal(this, 1.0D)); // Wander randomly
         this.goalSelector.addGoal(2, new RandomLookAroundGoal(this)); // Randomly look around
-        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 6.0F)); // Look at nearby players
+
+        this.goalSelector.addGoal(3, new GoToSpecialBlockGoal(this, ModBlocks.COMMANDING_TABLE.get(), 1.0f, 40));
+
+        this.goalSelector.addGoal(4, new LookAtPlayerGoal(this, Player.class, 6.0F)); // Look at nearby players
         // New AI goals
-        this.goalSelector.addGoal(4, new OpenDoorGoal(this, true)); // Open doors (if they can)
-        this.goalSelector.addGoal(5, new MoveThroughVillageGoal(this, 1.0D, false, 4, () -> true)); // Walk through villages
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, Zombie.class, 24.0F, 2.4D, 2.1D)); // Run from zombies
+        this.goalSelector.addGoal(5, new OpenDoorGoal(this, true)); // Open doors (if they can)
+        this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, false, 4, () -> true));
+        this.goalSelector.addGoal(7, new AvoidEntityGoal<>(this, Zombie.class, 24.0F, 1.6D, 1.4D)); // Run from zombies
 
 
     }
 
-         */
+    @Override
+    protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
+        if (!pPlayer.level().isClientSide()) {
+            MenuProvider provider = new SimpleMenuProvider(
+                    (containerId, playerInventory, player) ->
+                            new RecruitMenu(containerId, playerInventory),
+                    Component.translatable("npc.gui.npc_recruit_gui")
+
+            );
+            RecruitScreen.getNpc(this);
+            pPlayer.openMenu(provider);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         return PathfinderMob.createMobAttributes()
@@ -66,12 +91,16 @@ public class EntityNpcCitizen extends PathfinderMob {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
+    public void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
         pBuilder.define(DATA_GENDER, "gender");
         pBuilder.define(DATA_NAME, "name");
         pBuilder.define(DATA_SURNAME, "surname");
         pBuilder.define(DATA_VARIANT, 1);
+        //work and happiness
+        pBuilder.define(DATA_PROFESSION, "Unemployed");
+        pBuilder.define(DATA_HAPPINESS, 0.5f); // Range from 0.0f (sad) to 1.0f (happy)
+
     }
 
     public String getFName() {
@@ -126,6 +155,48 @@ public class EntityNpcCitizen extends PathfinderMob {
         return getFName() + " " + getSName();
     }
 
+    public String getProfession() {
+        return this.entityData.get(DATA_PROFESSION);
+    }
+
+    public float getHappiness() {
+        return this.entityData.get(DATA_HAPPINESS) * 100;
+    }
+
+    public Boolean setRecruitable() {
+        return recruitable = true;
+    }
+
+    public int getHappinessColor(float happinessF)  {
+        if (getHappiness()/100 <= 0.25f){
+            return 0xFF0000;
+        }
+
+        if (getHappiness()/100 <= 0.5f && getHappiness() / 100 > 0.25f){
+            return 0xFFA500;
+        }
+
+        if (getHappiness()/100 < 0.75f && getHappiness() / 100 > 0.5f){
+            return 0xFFFF00;
+        }
+
+        if (getHappiness() / 100 > 0.75f){
+            return 0x00FF00;
+        } else
+        return 0xFFFFFF;
+    }
+
+    public int getGenderColor(String gender) {
+
+        if (gender.equals("Male")) {
+            return 0x0000FF;
+        }
+        if (gender.equals("Female")) {
+            return 0xFFC0CB;
+        }
+        else return 0xFFFFFF;
+    }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -133,6 +204,10 @@ public class EntityNpcCitizen extends PathfinderMob {
         pCompound.putString("Surname", getSName());
         pCompound.putString("Gender", getGender());
         pCompound.putInt("TextureVariant", getTextureVariant());
+        pCompound.putString("Profession", getProfession());
+        pCompound.putFloat("Happiness", getHappiness()/100);
+
+
     }
 
     @Override
@@ -158,6 +233,15 @@ public class EntityNpcCitizen extends PathfinderMob {
             this.entityData.set(DATA_VARIANT, pCompound.getInt("TextureVariant"));
 
         }
+
+        if (pCompound.contains("Profession", 8)) {
+            this.entityData.set(DATA_PROFESSION, pCompound.getString("Profession"));
+        }
+
+        if (pCompound.contains("Happiness", 5)) { // 5 = float
+            this.entityData.set(DATA_HAPPINESS, pCompound.getFloat("Happiness"));
+        }
+
     }
 
 }

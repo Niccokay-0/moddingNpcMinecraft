@@ -16,6 +16,10 @@ public class ModMenus {
             MENU.register("commanding_table_menu",
                     () -> new MenuType<>(CommandingTableMenu::new, net.minecraft.world.flag.FeatureFlags.VANILLA_SET));
 
+    public static final RegistryObject<MenuType<RecruitMenu>> RECRUIT_MENU =
+            MENU.register("recruit_menu",
+                    () -> new MenuType<>(RecruitMenu::new, net.minecraft.world.flag.FeatureFlags.VANILLA_SET));
+
 
     public static void register(IEventBus eventBus) {
         MENU.register(eventBus);

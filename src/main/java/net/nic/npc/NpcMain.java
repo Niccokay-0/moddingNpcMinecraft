@@ -25,6 +25,7 @@ import net.nic.npc.initentities.ModEntities;
 import net.nic.npc.item.ModItems;
 import net.nic.npc.menu.ModMenus;
 import net.nic.npc.screen.CommandingTableScreen;
+import net.nic.npc.screen.RecruitScreen;
 import org.slf4j.Logger;
 
 @Mod(NpcMain.MOD_ID)
@@ -67,6 +68,7 @@ public class NpcMain {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             MenuScreens.register(ModMenus.COMMAND_TABLE_MENU.get(), CommandingTableScreen::new);
+            MenuScreens.register(ModMenus.RECRUIT_MENU.get(), RecruitScreen::new);
             EntityRenderers.register(ModEntities.NPC_CITIZEN.get(), (EntityRendererProvider<EntityNpcCitizen>) NpcCitizenRenderer::new);
         }
     }
