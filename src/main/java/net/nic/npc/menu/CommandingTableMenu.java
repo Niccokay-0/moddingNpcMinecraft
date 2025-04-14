@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 
 
 public class CommandingTableMenu extends AbstractContainerMenu {
-
     public CommandingTableMenu(int containerId, Inventory playerInventory) {
         super(ModMenus.COMMAND_TABLE_MENU.get(), containerId);
 
@@ -38,8 +37,11 @@ public class CommandingTableMenu extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
+
     @Override
     public boolean stillValid(Player player) {
         return true; // Always valid for now
     }
+
+
 }

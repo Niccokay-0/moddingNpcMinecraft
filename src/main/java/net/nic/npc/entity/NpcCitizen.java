@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.nic.npc.kingdom.KingdomInfo;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -25,8 +27,6 @@ import java.util.List;
 public class NpcCitizen extends PathfinderMob {
 
     public boolean recruitable = false;
-
-    public static final List<NpcCitizen> REGISTERED_CITIZENS = new ArrayList<>();
 
 
     private static final EntityDataAccessor<String> DATA_NAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
@@ -267,19 +267,18 @@ public class NpcCitizen extends PathfinderMob {
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        if (!this.level().isClientSide && !REGISTERED_CITIZENS.contains(this)) {
-            REGISTERED_CITIZENS.add(this);
+        if (!this.level().isClientSide && !KingdomInfo.getRegisteredCitizens().contains(this)) {
+            KingdomInfo.getRegisteredCitizens().add(this);
+            KingdomInfo.setNeededFood();
         }
     }
 
     @Override
     public void onRemovedFromWorld() {
         super.onRemovedFromWorld();
-        REGISTERED_CITIZENS.remove(this);
-    }
+        KingdomInfo.getRegisteredCitizens().remove(this);
+        KingdomInfo.setNeededFood();
 
-    public static List<NpcCitizen> getRegisteredCitizens() {
-        return REGISTERED_CITIZENS;
     }
 
 }

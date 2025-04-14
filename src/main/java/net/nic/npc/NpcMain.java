@@ -62,7 +62,7 @@ public class NpcMain {
         @SubscribeEvent
         public static void registerEntityAttributes(EntityAttributeCreationEvent event) {
             event.put(ModEntities.NPC.get(), EntityNpc.createAttributes().build());
-            event.put(ModEntities.NPC_CITIZEN.get(), NpcCitizen.createAttributes().build());
+            event.put(ModEntities.NPC_CITIZEN.get(), EntityNpc.createAttributes().build());
         }
     }
 

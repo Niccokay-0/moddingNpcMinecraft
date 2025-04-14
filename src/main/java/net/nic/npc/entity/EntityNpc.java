@@ -54,12 +54,7 @@ public class EntityNpc extends PathfinderMob {
         this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0D, false, 4, () -> true));
         this.goalSelector.addGoal(7, new AvoidEntityGoal<>(this, Zombie.class, 24.0F, 1.6D, 1.4D)); // Run from zombies
 
-
     }
-
-
-
-
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
@@ -110,14 +105,12 @@ public class EntityNpc extends PathfinderMob {
     }
 
     public void transformToCitizen() {
-        if (this.level().isClientSide) return; // Prevent running on client side
 
+        if (this.level().isClientSide) return;
         NpcCitizen newCitizen = ModEntities.NPC_CITIZEN.get().create((ServerLevel) this.level());
-
         if (newCitizen != null) {
             // Set position and rotation
             newCitizen.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
-
             // Copy over data
             newCitizen.setName(this.getFName());
             newCitizen.setSurname(this.getSName());
@@ -125,13 +118,10 @@ public class EntityNpc extends PathfinderMob {
             newCitizen.setTextureVariant(this.getTextureVariant());
             newCitizen.setProfession(this.getProfession());
             newCitizen.setHappiness(this.getHappiness() / 100f); // original is a float 0.0 - 1.0
-
             // Copy over health and other entity data if needed
             newCitizen.setHealth(this.getHealth());
-
             // Add new entity to world
             this.level().addFreshEntity(newCitizen);
-
             // Remove the old one
             this.discard();
         }
