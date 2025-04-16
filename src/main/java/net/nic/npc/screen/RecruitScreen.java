@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.nic.npc.NpcMain;
-import net.nic.npc.entity.EntityNpc;
+import net.nic.npc.entities.EntityNpc;
 
 import net.nic.npc.menu.RecruitMenu;
 

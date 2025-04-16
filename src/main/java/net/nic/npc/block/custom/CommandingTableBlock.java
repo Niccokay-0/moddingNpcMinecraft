@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.entities.KingdomInfo;
 import net.nic.npc.menu.CommandingTableMenu;
 import org.jetbrains.annotations.Nullable;
 

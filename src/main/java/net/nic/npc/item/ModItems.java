@@ -7,7 +7,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.nic.npc.initentities.ModEntities;
+import net.nic.npc.entities.ModEntities;
 
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =

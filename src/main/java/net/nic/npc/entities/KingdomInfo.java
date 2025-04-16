@@ -1,21 +1,31 @@
-package net.nic.npc.kingdom;
+package net.nic.npc.entities;
 
-import net.nic.npc.entity.NpcCitizen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class KingdomInfo {
+public class KingdomInfo extends Mob {
 
-    KingdomInfo info = KingdomInfoManager.get(player);
+   /* private static final EntityDataAccessor<List<UUID>> RELATED_CITIZENS =
 
-// then:
-    int pop = info.getPopulation();
-    float happy = info.getCitizensHappiness();
+            SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.OPTIONAL_UUID_LIST); // We'll define this
 
-    public static final List<NpcCitizen> REGISTERED_CITIZENS = new ArrayList<>();
+    */
+   public static final List<NpcCitizen> REGISTERED_CITIZENS = new ArrayList<>();
     public static int POPULATION;
     public static float HAPPINESS;
+
+    protected KingdomInfo(EntityType<? extends Mob> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+    }
 
     public static List<NpcCitizen> getRegisteredCitizens() {
         return REGISTERED_CITIZENS;
@@ -87,6 +97,18 @@ public class KingdomInfo {
             return 0xFF0000; //red
         }
         else return 0xFFFFFF;
+    }
+
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+    }
+
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
     }
 
 }

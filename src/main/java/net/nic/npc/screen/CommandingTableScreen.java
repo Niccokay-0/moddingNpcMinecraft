@@ -6,11 +6,9 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Inventory;
-import net.nic.npc.entity.EntityNpc;
-import net.nic.npc.entity.NpcCitizen;
-import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.entities.NpcCitizen;
+import net.nic.npc.entities.KingdomInfo;
 import net.nic.npc.menu.CommandingTableMenu;
 import net.nic.npc.NpcMain;
 
