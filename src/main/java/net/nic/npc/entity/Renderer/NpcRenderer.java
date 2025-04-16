@@ -1,4 +1,4 @@
-package net.nic.npc.client.renderer;
+package net.nic.npc.entity.Renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
 import net.nic.npc.NpcMain;
 import net.nic.npc.entity.EntityNpc;
 

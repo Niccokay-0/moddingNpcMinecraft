@@ -1,4 +1,4 @@
-package net.nic.npc.screen;
+package net.nic.npc.menu.Additions;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;

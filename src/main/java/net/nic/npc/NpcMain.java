@@ -18,16 +18,16 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.nic.npc.block.ModBlocks;
-import net.nic.npc.client.renderer.NpcCitizenRenderer;
-import net.nic.npc.client.renderer.NpcRenderer;
 import net.nic.npc.creativetabs.ModCreativeModeTabs;
 import net.nic.npc.entity.EntityNpc;
 import net.nic.npc.entity.NpcCitizen;
+import net.nic.npc.entity.Renderer.NpcCitizenRenderer;
+import net.nic.npc.entity.Renderer.NpcRenderer;
 import net.nic.npc.initentities.ModEntities;
 import net.nic.npc.item.ModItems;
 import net.nic.npc.menu.ModMenus;
-import net.nic.npc.screen.CommandingTableScreen;
-import net.nic.npc.screen.RecruitScreen;
+import net.nic.npc.menu.screen.CommandingTableScreen;
+import net.nic.npc.menu.screen.RecruitScreen;
 import org.slf4j.Logger;
 
 @Mod(NpcMain.MOD_ID)

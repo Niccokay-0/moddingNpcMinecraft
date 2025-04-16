@@ -1,4 +1,4 @@
-package net.nic.npc.screen;
+package net.nic.npc.menu.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -93,7 +93,7 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        MinimapRenderer.renderMinimap(graphics, this.minecraft.level, mapCenter, mapScale, this.width, this.height, this.font);
+        net.nic.npc.screen.MinimapRenderer.renderMinimap(graphics, this.minecraft.level, mapCenter, mapScale, this.width, this.height, this.font);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package net.nic.npc.screen;
+package net.nic.npc.menu.screen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

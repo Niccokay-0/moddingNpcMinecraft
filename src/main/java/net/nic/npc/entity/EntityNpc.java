@@ -15,11 +15,12 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+
 import net.nic.npc.block.ModBlocks;
 import net.nic.npc.entity.ai.goal.GoToSpecialBlockGoal;
-import net.nic.npc.initentities.ModEntities;
 import net.nic.npc.menu.RecruitMenu;
-import net.nic.npc.screen.RecruitScreen;
+import net.nic.npc.menu.screen.RecruitScreen;
+
 import org.jetbrains.annotations.Nullable;
 
 public class EntityNpc extends PathfinderMob {

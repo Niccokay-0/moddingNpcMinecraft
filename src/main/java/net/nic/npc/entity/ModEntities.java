@@ -1,4 +1,4 @@
-package net.nic.npc.initentities;
+package net.nic.npc.entity;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -7,9 +7,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
 import net.nic.npc.NpcMain;
-import net.nic.npc.entity.EntityNpc;
-import net.nic.npc.entity.NpcCitizen;
 
 public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =

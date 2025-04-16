@@ -3,6 +3,7 @@ package net.nic.npc.block;
 import net.nic.npc.NpcMain;
 import net.nic.npc.block.custom.CommandingTableBlock;
 import net.nic.npc.item.ModItems;
+
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
