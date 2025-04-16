@@ -20,8 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import net.nic.npc.kingdom.KingdomInfo;
-import net.nic.npc.menu.CommandingTableMenu;
 
+import net.nic.npc.menu.menus.CommandingTableMenu;
 import org.jetbrains.annotations.Nullable;
 
 

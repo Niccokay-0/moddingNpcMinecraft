@@ -1,9 +1,10 @@
-package net.nic.npc.menu;
+package net.nic.npc.menu.menus;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.nic.npc.menu.ModMenus;
 
 
 public class RecruitMenu extends AbstractContainerMenu {

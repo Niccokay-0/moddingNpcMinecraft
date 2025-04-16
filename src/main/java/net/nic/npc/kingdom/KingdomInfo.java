@@ -7,12 +7,6 @@ import java.util.List;
 
 public class KingdomInfo {
 
-    KingdomInfo info = KingdomInfoManager.get(player);
-
-// then:
-    int pop = info.getPopulation();
-    float happy = info.getCitizensHappiness();
-
     public static final List<NpcCitizen> REGISTERED_CITIZENS = new ArrayList<>();
     public static int POPULATION;
     public static float HAPPINESS;

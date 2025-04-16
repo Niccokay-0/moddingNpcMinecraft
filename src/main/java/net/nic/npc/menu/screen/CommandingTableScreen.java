@@ -6,16 +6,16 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Inventory;
-import net.nic.npc.entity.EntityNpc;
 import net.nic.npc.entity.NpcCitizen;
 import net.nic.npc.kingdom.KingdomInfo;
-import net.nic.npc.menu.CommandingTableMenu;
 import net.nic.npc.NpcMain;
+import net.nic.npc.menu.menus.CommandingTableMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.nic.npc.menu.Additions.MinimapRenderer.renderMinimap;
 
 public class CommandingTableScreen extends AbstractContainerScreen<CommandingTableMenu> {
 
@@ -93,7 +93,7 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        net.nic.npc.screen.MinimapRenderer.renderMinimap(graphics, this.minecraft.level, mapCenter, mapScale, this.width, this.height, this.font);
+       renderMinimap(graphics, this.minecraft.level, mapCenter, mapScale, this.width, this.height, this.font);
     }
 
     @Override

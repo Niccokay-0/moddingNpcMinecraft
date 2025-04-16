@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.nic.npc.NpcMain;
 import net.nic.npc.entity.EntityNpc;
 
-import net.nic.npc.menu.RecruitMenu;
+import net.nic.npc.menu.menus.RecruitMenu;
 
 import java.util.ArrayList;
 import java.util.List;

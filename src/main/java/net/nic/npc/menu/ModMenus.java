@@ -7,6 +7,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.nic.npc.NpcMain;
 
+import net.nic.npc.menu.menus.CommandingTableMenu;
+import net.nic.npc.menu.menus.RecruitMenu;
+
 public class ModMenus {
 
     public static final DeferredRegister<MenuType<?>> MENU =

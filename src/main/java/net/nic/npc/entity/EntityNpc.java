@@ -18,7 +18,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 import net.nic.npc.block.ModBlocks;
 import net.nic.npc.entity.ai.goal.GoToSpecialBlockGoal;
-import net.nic.npc.menu.RecruitMenu;
+import net.nic.npc.menu.menus.RecruitMenu;
 import net.nic.npc.menu.screen.RecruitScreen;
 
 import org.jetbrains.annotations.Nullable;
