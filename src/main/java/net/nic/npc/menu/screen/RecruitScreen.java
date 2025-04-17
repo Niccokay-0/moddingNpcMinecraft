@@ -70,33 +70,30 @@ public class RecruitScreen extends AbstractContainerScreen<RecruitMenu> {
         this.addRenderableWidget(recruitButton);
         this.addRenderableWidget(dismissButton);
     }
-
     private void onRecruitButtonPressed() {
         // TODO: Add recruitment logic
         Minecraft.getInstance().setScreen(null);
         npcC.transformToCitizen(recruiter);
-        System.out.println("Recruitment button pressed");
     }
-
     private void onDismissButtonPressed() {
         // TODO: Add dismiss logic
         Minecraft.getInstance().setScreen(null);
-        System.out.println("Dismiss button pressed");
     }
-
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
     }
 
+
+
     public static Void getNpc(EntityNpc npc) {
         npcC = npc;
         return null;
     }
-
     public static void getRecruiter(Player pPlayer) {
         recruiter = pPlayer;
     }
+
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
@@ -104,11 +101,6 @@ public class RecruitScreen extends AbstractContainerScreen<RecruitMenu> {
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
         InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,245,120,500,264,40,0,mouseX,mouseY,npcC);
-    }
-
-    @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY) {
-        return super.mouseScrolled(pMouseX, pMouseY, pScrollX, pScrollY);
     }
 
     @Override
@@ -122,9 +114,6 @@ public class RecruitScreen extends AbstractContainerScreen<RecruitMenu> {
         graphics.drawString(this.font, Component.literal(String.valueOf(npcC.getHappiness())),px,py + 75,npcC.getHappinessColor(npcC.getHappiness()));
 
     }
-
-
-
     @Override
     public boolean isPauseScreen() {
         return false;

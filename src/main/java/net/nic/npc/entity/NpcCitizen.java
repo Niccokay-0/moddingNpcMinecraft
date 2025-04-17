@@ -27,7 +27,7 @@ public class NpcCitizen extends PathfinderMob {
 
     public boolean recruitable = false;
 
-    private static final EntityDataAccessor<Optional<UUID>> OWNER= SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.OPTIONAL_UUID);
+    private UUID OWNER;
     private static final EntityDataAccessor<String> DATA_NAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_SURNAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_GENDER = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
@@ -71,8 +71,7 @@ public class NpcCitizen extends PathfinderMob {
     public void setOwner(UUID id) {
         KingdomInfo kingdom = KingdomManager.getKingdom(id);
         kingdom.registerCitizen(this);
-        Optional<UUID> uuid = Optional.ofNullable(id);
-        this.entityData.set(OWNER, uuid);
+        OWNER = id;
     }
 
     public KingdomInfo getKingdom(UUID id) {
@@ -80,7 +79,7 @@ public class NpcCitizen extends PathfinderMob {
     }
 
     public UUID getOwnerUUid() {
-        return this.entityData.get(OWNER).get();
+        return OWNER;
     }
 
     public void setName(String name) {
@@ -101,8 +100,6 @@ public class NpcCitizen extends PathfinderMob {
     public void setHappiness(float happiness) {
         this.entityData.set(DATA_HAPPINESS, happiness);
     }
-
-
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
@@ -113,7 +110,6 @@ public class NpcCitizen extends PathfinderMob {
         this.entityData.set(DATA_VARIANT, pickTexture());
         return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
     }
-
     @Override
     public void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
@@ -124,10 +120,9 @@ public class NpcCitizen extends PathfinderMob {
         //work and happiness
         pBuilder.define(DATA_PROFESSION, "Unemployed");
         pBuilder.define(DATA_HAPPINESS, 0.5f); // Range from 0.0f (sad) to 1.0f (happy)
-        pBuilder.define(OWNER, Optional.empty());
+        OWNER = null;
 
     }
-
     public String getFName() {
         return this.entityData.get(DATA_NAME);
     }
@@ -137,10 +132,10 @@ public class NpcCitizen extends PathfinderMob {
     public String getGender() {
         return this.entityData.get(DATA_GENDER);
     }
+
     public int getTextureVariant() {
         return this.entityData.get(DATA_VARIANT);
     }
-
     private String pickRandomName(String gender) {
         String[] maleNames = {
                 "Liam", "Noah", "Oliver", "Elijah", "James", "William", "Benjamin", "Lucas", "Henry", "Alexander", "Mason", "Michael", "Ethan", "Daniel", "Jacob", "Logan", "Jackson", "Levi", "Sebastian", "Mateo", "Jack", "Owen", "Theodore", "Aiden", "Samuel", "Joseph", "John", "David", "Wyatt", "Matthew", "Luke", "Asher", "Carter", "Julian", "Grayson", "Leo", "Jayden", "Gabriel", "Isaac", "Lincoln", "Anthony", "Hudson", "Dylan", "Ezra", "Thomas", "Charles", "Christopher", "Jaxon", "Maverick", "Josiah", "Andrew", "Elias", "Joshua", "Nathan", "Caleb", "Ryan", "Adrian", "Miles", "Eli", "Nolan", "Christian", "Aaron", "Cameron", "Ezekiel", "Colton", "Luca", "Landon", "Hunter", "Jonathan", "Santiago", "Axel", "Easton", "Cooper", "Jeremiah", "Angel", "Roman", "Connor", "Jameson", "Robert", "Greyson", "Jordan", "Ian", "Carson", "Jaxson", "Leonardo", "Nicholas", "Dominic", "Austin", "Everett", "Brooks", "Xavier", "Kai", "Jose", "Parker", "Adam", "Jace", "Wesley", "Kayden", "Silas", "Declan", "Weston", "Bennett", "Micah", "Blake", "Waylon", "Damian", "Brayden", "Vincent", "Ryder", "Tristan", "Bentley", "Luis", "George", "Kai", "Zion", "Carlos", "Max", "Ryker", "Ashton", "Diego", "Braxton", "Ivan", "Giovanni", "Rowan", "Harrison", "Jasper", "Brandon", "Jonah", "Kaiden", "Bryson", "Amir", "Kingston", "Archer", "Theo", "Enzo", "Kevin", "Judah", "Beau", "Tucker", "Finn", "Grant", "Emmett", "Emmanuel", "Corbin", "Rhett", "Edward", "August", "Nicolas", "Emilio", "Colin", "Tyler", "Phoenix", "Jude", "Alex", "Karter", "Francisco", "Paul", "Oscar", "Knox", "Dakota", "Leon", "Graham", "Malachi", "Hendrix", "Adonis", "Jesse", "Zane", "Travis", "Kaden", "Gianni", "Cody", "Rafael", "Remington", "Maxwell", "Andre", "Ali", "Arthur", "Erick", "Ronin", "Kairo", "Andy", "Orion", "Prince", "Avery", "Marco", "Gideon", "Fernando", "Brady", "Jayce", "Jake", "Tobias", "Pedro", "Zander", "Kash", "Israel", "Preston", "Marcus", "Kyrie", "Kenneth", "Jett", "Stephen", "Spencer", "Shane", "Nasir", "Holden", "Malik", "Troy", "Jaylen", "Kobe", "Bryce"
@@ -178,10 +173,10 @@ public class NpcCitizen extends PathfinderMob {
     public float getHappiness() {
         return this.entityData.get(DATA_HAPPINESS) * 100;
     }
+
     public Boolean setRecruitable() {
         return recruitable = true;
     }
-
     public int getHappinessColor(float happinessF)  {
         if (getHappiness()/100 <= 0.25f){
             return 0xFF0000;
@@ -204,6 +199,7 @@ public class NpcCitizen extends PathfinderMob {
 
       return 0xD3D3D3;
     }
+
     public int getGenderColor(String gender) {
 
         if (gender.equals("Male")) {
@@ -214,7 +210,6 @@ public class NpcCitizen extends PathfinderMob {
         }
         else return 0xFFFFFF;
     }
-
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -227,6 +222,7 @@ public class NpcCitizen extends PathfinderMob {
 
 
     }
+
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
@@ -258,24 +254,6 @@ public class NpcCitizen extends PathfinderMob {
         if (pCompound.contains("Happiness", 5)) { // 5 = float
             this.entityData.set(DATA_HAPPINESS, pCompound.getFloat("Happiness"));
         }
-
-    }
-
-    @Override
-    public void onAddedToWorld() {
-        super.onAddedToWorld();
-        getKingdom(getOwnerUUid()).updateNeededFood();
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        super.onRemovedFromWorld();
-
-        if (getKingdom(getOwnerUUid()) != null) {
-            getKingdom(getOwnerUUid()).getRegisteredCitizens().contains(this);
-            getKingdom(getOwnerUUid()).getRegisteredCitizens().remove(this);
-        }
-        getKingdom(getOwnerUUid()).updateNeededFood();
 
     }
 

@@ -43,11 +43,16 @@ public class CommandingTableBlock extends Block {
 
             // Check if pPlacer is a Player
             if (pPlacer instanceof Player player) {
-                // Create the kingdom info, using player information
-                this.kingdom = new KingdomInfo("kingdomNameRandom", serverLevel, player);
 
-                // Register the kingdom with the player's UUID
-                KingdomManager.registerKingdom(player.getUUID(), kingdom);
+
+                // Create the kingdom info, using player information
+                if (!KingdomManager.hasKingdom(player.getUUID())) {
+                    this.kingdom = new KingdomInfo("kingdomNameRandom", serverLevel, player);
+                    KingdomManager.registerKingdom(player.getUUID(), this.kingdom);
+
+                } else if (KingdomManager.hasKingdom(player.getUUID())) {
+                    this.kingdom = KingdomManager.getKingdom(player.getUUID());
+                }
             }
         }
 
@@ -80,6 +85,7 @@ public class CommandingTableBlock extends Block {
                     );
                     serverPlayer.openMenu(provider);
                 }
+                kingdom.updateNeededFood();
             }
 
         }

@@ -70,8 +70,8 @@ public class EntityNpc extends PathfinderMob {
                     Component.translatable("npc.gui.npc_recruit_gui")
 
             );
-            RecruitScreen.getRecruiter(pPlayer);
             RecruitScreen.getNpc(this);
+            RecruitScreen.getRecruiter(pPlayer);
             pPlayer.openMenu(provider);
         }
         return InteractionResult.SUCCESS;
@@ -116,9 +116,9 @@ public class EntityNpc extends PathfinderMob {
         if (KingdomManager.hasKingdom(id)) {
             if (this.level().isClientSide) return;
 
-            NpcCitizen newCitizen = ModEntities.NPC_CITIZEN.get().create((ServerLevel) this.level());
-            if (newCitizen != null) {
-                newCitizen.setOwner(id);
+            NpcCitizen newCitizen = new NpcCitizen(ModEntities.NPC_CITIZEN.get(),(ServerLevel) this.level());
+            newCitizen.setOwner(id);
+
                 // Set position and rotation
                 newCitizen.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
                 // Copy over data
@@ -134,7 +134,6 @@ public class EntityNpc extends PathfinderMob {
                 this.level().addFreshEntity(newCitizen);
                 // Remove the old one
                 this.discard();
-            }
         }
     }
 
