@@ -4,6 +4,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.kingdom.KingdomManager;
 import net.nic.npc.menu.ModMenus;
 
 
@@ -11,7 +13,7 @@ public class RecruitMenu extends AbstractContainerMenu {
 
     public RecruitMenu(int containerId, Inventory playerInventory) {
         super(ModMenus.RECRUIT_MENU.get(), containerId);
-        }
+    }
 
     @Override
     public ItemStack quickMoveStack(Player player, int i) {

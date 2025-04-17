@@ -8,8 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.nic.npc.entity.NpcCitizen;
-import net.nic.npc.kingdom.KingdomInfo;
 import net.nic.npc.NpcMain;
+import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.kingdom.KingdomManager;
 import net.nic.npc.menu.menus.CommandingTableMenu;
 
 import java.util.ArrayList;
@@ -104,12 +105,12 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
         switch (displayMode) {
             case 0 -> {
                 // Info: Kingdom name, type, happiness, population
-                graphics.drawString(this.font, Component.literal("Kingdom: Eldoria"), 20, 40, 0xFFFFFF);
+                graphics.drawString(this.font, Component.literal(getKingdom().getKingdomName()), 20, 40, 0xFFFFFF);
                 graphics.drawString(this.font, Component.literal("Type: Monarchy"), 20, 55, 0xFFFFFF);
-                graphics.drawString(this.font, Component.literal(String.valueOf(KingdomInfo.getCitizensHappiness())), 20, 70, KingdomInfo.happinessColor());
-                graphics.drawString(this.font, Component.literal(String.valueOf(KingdomInfo.getPopulation())), 20, 85, 0xFFFFFF);
+                graphics.drawString(this.font, Component.literal(String.valueOf(getKingdom().getCitizensHappiness())), 20, 70, getKingdom().happinessColor());
+                graphics.drawString(this.font, Component.literal(String.valueOf(getKingdom().getPopulation())), 20, 85, 0xFFFFFF);
 
-                List<NpcCitizen> citizens = KingdomInfo.getRegisteredCitizens();
+                List<NpcCitizen> citizens = getKingdom().getRegisteredCitizens();
                 int yOffset = 110;
                 for (NpcCitizen citizen : citizens) {
                     String line = String.format(
@@ -127,8 +128,8 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
 
             }
             case 1 -> {
-                graphics.drawString(this.font, Component.literal("Needed Food: " + KingdomInfo.getNeededFood()), 20, 40, KingdomInfo.foodColor(KingdomInfo.getFoodValue(),KingdomInfo.getNeededFood()));
-                graphics.drawString(this.font, Component.literal("Food Value: " + KingdomInfo.getFoodValue()), 20, 60, KingdomInfo.foodColor(KingdomInfo.getFoodValue(),KingdomInfo.getNeededFood()));
+                graphics.drawString(this.font, Component.literal("Needed Food: " + getKingdom().getNeededFood()), 20, 40, getKingdom().foodColor());
+                graphics.drawString(this.font, Component.literal("Food Value: " + getKingdom().getFoodValue()), 20, 60, getKingdom().foodColor());
 
             }
             case 2 -> {
@@ -147,6 +148,10 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
     }
 
 
+    public static KingdomInfo getKingdom()  {
+        KingdomInfo kingdom = KingdomManager.getKingdom(CommandingTableMenu.getPlayer().getUUID());
+        return kingdom;
+    }
 
     public static int getDisplayMode() {
         return displayMode;

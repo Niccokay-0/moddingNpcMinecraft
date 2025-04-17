@@ -1,11 +1,9 @@
 package net.nic.npc.entity;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -19,16 +17,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.kingdom.KingdomManager;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class NpcCitizen extends PathfinderMob {
 
     public boolean recruitable = false;
 
-
+    private static final EntityDataAccessor<Optional<UUID>> OWNER= SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<String> DATA_NAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_SURNAME = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_GENDER = SynchedEntityData.defineId(NpcCitizen.class, EntityDataSerializers.STRING);
@@ -69,26 +68,36 @@ public class NpcCitizen extends PathfinderMob {
 
     }
 
+    public void setOwner(UUID id) {
+        KingdomInfo kingdom = KingdomManager.getKingdom(id);
+        kingdom.registerCitizen(this);
+        Optional<UUID> uuid = Optional.ofNullable(id);
+        this.entityData.set(OWNER, uuid);
+    }
+
+    public KingdomInfo getKingdom(UUID id) {
+     return KingdomManager.getKingdom(id);
+    }
+
+    public UUID getOwnerUUid() {
+        return this.entityData.get(OWNER).get();
+    }
+
     public void setName(String name) {
         this.entityData.set(DATA_NAME, name);
     }
-
     public void setSurname(String surname) {
         this.entityData.set(DATA_SURNAME, surname);
     }
-
     public void setGender(String gender) {
         this.entityData.set(DATA_GENDER, gender);
     }
-
     public void setTextureVariant(int variant) {
         this.entityData.set(DATA_VARIANT, variant);
     }
-
     public void setProfession(String profession) {
         this.entityData.set(DATA_PROFESSION, profession);
     }
-
     public void setHappiness(float happiness) {
         this.entityData.set(DATA_HAPPINESS, happiness);
     }
@@ -115,21 +124,19 @@ public class NpcCitizen extends PathfinderMob {
         //work and happiness
         pBuilder.define(DATA_PROFESSION, "Unemployed");
         pBuilder.define(DATA_HAPPINESS, 0.5f); // Range from 0.0f (sad) to 1.0f (happy)
+        pBuilder.define(OWNER, Optional.empty());
 
     }
 
     public String getFName() {
         return this.entityData.get(DATA_NAME);
     }
-
     public String getSName() {
         return this.entityData.get(DATA_SURNAME);
     }
-
     public String getGender() {
         return this.entityData.get(DATA_GENDER);
     }
-
     public int getTextureVariant() {
         return this.entityData.get(DATA_VARIANT);
     }
@@ -151,34 +158,26 @@ public class NpcCitizen extends PathfinderMob {
         }
         return returnName;
     }
-
     private String pickRandomSurname() {
         String[] surnames = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy", "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey", "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson", "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza", "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers", "Long", "Ross", "Foster", "Jimenez", "Powell", "Jenkins", "Perry", "Russell", "Sullivan", "Bell", "Coleman", "Butler", "Henderson", "Barnes", "Gonzales", "Fisher", "Vasquez", "Simmons", "Romero", "Jordan", "Patterson", "Alexander", "Hamilton", "Graham", "Reynolds", "Griffin", "Wallace", "Moreno", "West", "Cole", "Hayes", "Bryant", "Herrera", "Gibson", "Ellis", "Tran", "Medina", "Aguilar", "Stevens", "Murray", "Ford", "Castro", "Marshall", "Owens", "Harrison", "Fernandez", "Mcdonald", "Woods", "Washington", "Kennedy", "Wells", "Vargas", "Henry", "Chen", "Freeman", "Webb", "Tucker", "Guzman", "Burns", "Crawford", "Olson", "Simpson", "Porter", "Hunter", "Gordon", "Mendez", "Silva", "Shaw", "Snyder", "Mason", "Dixon", "Munoz", "Hunt", "Hicks", "Holmes", "Palmer", "Wagner", "Black", "Robertson", "Boyd", "Rose", "Stone", "Salazar", "Fox", "Warren", "Mills", "Meyer", "Rice", "Schmidt", "Garza", "Daniels", "Ferguson", "Nichols", "Stephens", "Soto", "Weaver", "Ryan", "Gardner", "Payne", "Grant", "Dunn", "Kelley", "Spencer", "Hawkins", "Arnold", "Pierce", "Vega", "Hansen", "Peters"};
         return surnames[getRandom().nextInt(surnames.length)];
     }
-
-
     private String pickGender() {
         String[] genders = {"Male", "Female"};
         return genders[this.getRandom().nextInt(genders.length)];
     }
-
     private int pickTexture() {
         return this.getRandom().nextInt(19) + 1;
     }
-
     public String getFullName() {
         return getFName() + " " + getSName();
     }
-
     public String getProfession() {
         return this.entityData.get(DATA_PROFESSION);
     }
-
     public float getHappiness() {
         return this.entityData.get(DATA_HAPPINESS) * 100;
     }
-
     public Boolean setRecruitable() {
         return recruitable = true;
     }
@@ -201,7 +200,6 @@ public class NpcCitizen extends PathfinderMob {
         } else
         return 0xFFFFFF;
     }
-
     public int getProfessionColor(String string) {
 
       return 0xD3D3D3;
@@ -229,7 +227,6 @@ public class NpcCitizen extends PathfinderMob {
 
 
     }
-
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
@@ -267,17 +264,18 @@ public class NpcCitizen extends PathfinderMob {
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
-        if (!this.level().isClientSide && !KingdomInfo.getRegisteredCitizens().contains(this)) {
-            KingdomInfo.getRegisteredCitizens().add(this);
-            KingdomInfo.setNeededFood();
-        }
+        getKingdom(getOwnerUUid()).updateNeededFood();
     }
 
     @Override
     public void onRemovedFromWorld() {
         super.onRemovedFromWorld();
-        KingdomInfo.getRegisteredCitizens().remove(this);
-        KingdomInfo.setNeededFood();
+
+        if (getKingdom(getOwnerUUid()) != null) {
+            getKingdom(getOwnerUUid()).getRegisteredCitizens().contains(this);
+            getKingdom(getOwnerUUid()).getRegisteredCitizens().remove(this);
+        }
+        getKingdom(getOwnerUUid()).updateNeededFood();
 
     }
 

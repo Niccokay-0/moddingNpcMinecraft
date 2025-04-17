@@ -18,10 +18,14 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 import net.nic.npc.block.ModBlocks;
 import net.nic.npc.entity.ai.goal.GoToSpecialBlockGoal;
+import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.kingdom.KingdomManager;
 import net.nic.npc.menu.menus.RecruitMenu;
 import net.nic.npc.menu.screen.RecruitScreen;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 public class EntityNpc extends PathfinderMob {
 
@@ -66,6 +70,7 @@ public class EntityNpc extends PathfinderMob {
                     Component.translatable("npc.gui.npc_recruit_gui")
 
             );
+            RecruitScreen.getRecruiter(pPlayer);
             RecruitScreen.getNpc(this);
             pPlayer.openMenu(provider);
         }
@@ -105,26 +110,31 @@ public class EntityNpc extends PathfinderMob {
 
     }
 
-    public void transformToCitizen() {
+    public void transformToCitizen(Player player) {
+        UUID id = player.getUUID();
 
-        if (this.level().isClientSide) return;
-        NpcCitizen newCitizen = ModEntities.NPC_CITIZEN.get().create((ServerLevel) this.level());
-        if (newCitizen != null) {
-            // Set position and rotation
-            newCitizen.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
-            // Copy over data
-            newCitizen.setName(this.getFName());
-            newCitizen.setSurname(this.getSName());
-            newCitizen.setGender(this.getGender());
-            newCitizen.setTextureVariant(this.getTextureVariant());
-            newCitizen.setProfession(this.getProfession());
-            newCitizen.setHappiness(this.getHappiness() / 100f); // original is a float 0.0 - 1.0
-            // Copy over health and other entity data if needed
-            newCitizen.setHealth(this.getHealth());
-            // Add new entity to world
-            this.level().addFreshEntity(newCitizen);
-            // Remove the old one
-            this.discard();
+        if (KingdomManager.hasKingdom(id)) {
+            if (this.level().isClientSide) return;
+
+            NpcCitizen newCitizen = ModEntities.NPC_CITIZEN.get().create((ServerLevel) this.level());
+            if (newCitizen != null) {
+                newCitizen.setOwner(id);
+                // Set position and rotation
+                newCitizen.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
+                // Copy over data
+                newCitizen.setName(this.getFName());
+                newCitizen.setSurname(this.getSName());
+                newCitizen.setGender(this.getGender());
+                newCitizen.setTextureVariant(this.getTextureVariant());
+                newCitizen.setProfession(this.getProfession());
+                newCitizen.setHappiness(this.getHappiness() / 100f); // original is a float 0.0 - 1.0
+                // Copy over health and other entity data if needed
+                newCitizen.setHealth(this.getHealth());
+                // Add new entity to world
+                this.level().addFreshEntity(newCitizen);
+                // Remove the old one
+                this.discard();
+            }
         }
     }
 

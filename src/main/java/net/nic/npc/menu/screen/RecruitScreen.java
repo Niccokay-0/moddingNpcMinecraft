@@ -8,9 +8,12 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.nic.npc.NpcMain;
 import net.nic.npc.entity.EntityNpc;
 
+import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.kingdom.KingdomManager;
 import net.nic.npc.menu.menus.RecruitMenu;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import java.util.List;
 public class RecruitScreen extends AbstractContainerScreen<RecruitMenu> {
 
     static EntityNpc npcC;
+    static Player recruiter;
 
     private static final ResourceLocation TEXTURE =
             ResourceLocation.fromNamespaceAndPath(NpcMain.MOD_ID, "textures/gui/commanding_table.png"); // replace with actual path
@@ -70,7 +74,7 @@ public class RecruitScreen extends AbstractContainerScreen<RecruitMenu> {
     private void onRecruitButtonPressed() {
         // TODO: Add recruitment logic
         Minecraft.getInstance().setScreen(null);
-        npcC.transformToCitizen();
+        npcC.transformToCitizen(recruiter);
         System.out.println("Recruitment button pressed");
     }
 
@@ -88,6 +92,10 @@ public class RecruitScreen extends AbstractContainerScreen<RecruitMenu> {
     public static Void getNpc(EntityNpc npc) {
         npcC = npc;
         return null;
+    }
+
+    public static void getRecruiter(Player pPlayer) {
+        recruiter = pPlayer;
     }
 
     @Override

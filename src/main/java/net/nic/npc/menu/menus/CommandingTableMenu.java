@@ -9,8 +9,11 @@ import net.nic.npc.menu.ModMenus;
 
 
 public class CommandingTableMenu extends AbstractContainerMenu {
-    public CommandingTableMenu(int containerId, Inventory playerInventory) {
+    private static Player player;
+
+    public CommandingTableMenu(int containerId, Inventory playerInventory, Player player) {
         super(ModMenus.COMMAND_TABLE_MENU.get(), containerId);
+        this.player = player;
 
         // bottom-left corner
         int xOffset = 10;
@@ -33,11 +36,14 @@ public class CommandingTableMenu extends AbstractContainerMenu {
         }
     }
 
+    public static Player getPlayer() {
+        return player;
+    }
+
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
         return ItemStack.EMPTY;
     }
-
 
     @Override
     public boolean stillValid(Player player) {
