@@ -1,5 +1,8 @@
 package net.nic.npc.kingdom;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -7,11 +10,11 @@ import net.nic.npc.entity.NpcCitizen;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class KingdomInfo {
 
     private String kingdomName;
-    private final ServerLevel level;
     private final Player owner;
     private final List<NpcCitizen> registeredCitizens;
     private int population;
@@ -20,8 +23,7 @@ public class KingdomInfo {
     private int neededFood;
 
     public KingdomInfo(String name, ServerLevel level, Player owner) {
-        kingdomName = name;
-        this.level = level;
+        this.kingdomName = name;
         this.owner = owner;
 
         this.registeredCitizens = new ArrayList<>();
@@ -109,6 +111,8 @@ public class KingdomInfo {
         return 0xFFFFFF;
     }
 
+
+
     public int happinessColor() {
         if (happiness >= 0.40f) {
             return 0x00FF00; // green
@@ -120,5 +124,44 @@ public class KingdomInfo {
             return 0xFF0000; // red
         }
         return 0xFFFFFF;
+    }
+
+
+    public CompoundTag save(CompoundTag tag) {
+        tag.putString("KingdomName", kingdomName);
+        tag.putUUID("OwnerUUID", owner.getUUID());
+
+        tag.putInt("Population", getPopulation());
+        tag.putFloat("Happiness", happiness);
+        tag.putInt("FoodValue", foodValue);
+        tag.putInt("NeededFood", neededFood);
+
+        // Optionally save citizen names for debugging/logging (not full entities)
+        ListTag citizenList = new ListTag();
+        for (NpcCitizen citizen : registeredCitizens) {
+            citizenList.add(StringTag.valueOf(citizen.getName().getString()));
+        }
+        tag.put("CitizenNames", citizenList);
+
+        return tag;
+    }
+
+    public static KingdomInfo load(CompoundTag tag, ServerLevel level) {
+        String kingdomName = tag.getString("KingdomName");
+        UUID ownerUUID = tag.getUUID("OwnerUUID");
+
+        Player owner = level.getPlayerByUUID(ownerUUID);
+        if (owner == null) {
+            throw new IllegalStateException("Owner player not found in world when loading kingdom.");
+        }
+
+        KingdomInfo info = new KingdomInfo(kingdomName, level, owner);
+        info.population = tag.getInt("Population");
+        info.happiness = tag.getFloat("Happiness");
+        info.foodValue = tag.getInt("FoodValue");
+        info.neededFood = tag.getInt("NeededFood");
+
+        // Citizen list loading can be implemented later with actual entity data if needed
+        return info;
     }
 }

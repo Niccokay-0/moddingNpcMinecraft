@@ -37,24 +37,18 @@ public class CommandingTableBlock extends Block {
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-        if (!pLevel.isClientSide) {
-            // Cast to ServerLevel to manipulate the world
-            ServerLevel serverLevel = (ServerLevel) pLevel;
 
-            // Check if pPlacer is a Player
-            if (pPlacer instanceof Player player) {
-
-
-                // Create the kingdom info, using player information
-                if (!KingdomManager.hasKingdom(player.getUUID())) {
-                    this.kingdom = new KingdomInfo("kingdomNameRandom", serverLevel, player);
-                    KingdomManager.registerKingdom(player.getUUID(), this.kingdom);
-
-                } else if (KingdomManager.hasKingdom(player.getUUID())) {
-                    this.kingdom = KingdomManager.getKingdom(player.getUUID());
-                }
+        // Only proceed if we are on the server side and pLevel is a ServerLevel
+        if (!pLevel.isClientSide && pLevel instanceof ServerLevel serverLevel && pPlacer instanceof Player player) {
+            if (!KingdomManager.hasKingdom(player.getUUID(), serverLevel)) {
+                this.kingdom = new KingdomInfo("kingdomNameRandom", serverLevel, player);
+                KingdomManager.registerKingdom(player.getUUID(), this.kingdom, serverLevel);
+            } else {
+                this.kingdom = KingdomManager.getKingdom(player.getUUID(), serverLevel);
             }
         }
+
+
 
         /*
         if (pPlacer instanceof Player) {
@@ -68,29 +62,39 @@ public class CommandingTableBlock extends Block {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
+        //  we're on the server side bro???
         if (!pLevel.isClientSide) {
-            ItemStack pStack = pPlayer.getMainHandItem();
-            //TODO ADD EATING SOUND AND DO THE DISMISS CITIZEN GUI, + ADD FOOD SYSTEM
-            if (isEdible(pStack)) {
-                pStack.shrink(1);
-                pLevel.playSound(pPlayer, pPos, SoundEvents.AMETHYST_BLOCK_STEP, SoundSource.BLOCKS, 1f,1f );
-                kingdom.addFoodValue((int) (getFoodNutrition(pStack)*30));
-            }
-            else if (!isEdible(pStack)) {
-                if (pPlayer instanceof ServerPlayer serverPlayer) {
-                    MenuProvider provider = new SimpleMenuProvider(
-                            (containerId, playerInventory, _player) ->
-                                    new CommandingTableMenu(containerId, playerInventory, pPlayer),
-                            Component.translatable("npc.gui.commanding_table")
-                    );
-                    serverPlayer.openMenu(provider);
+            // WE ARE SO MAKE IT A SERVERLEVELE
+            if (pLevel instanceof ServerLevel serverLevel) {
+                ItemStack pStack = pPlayer.getMainHandItem();
+
+                // IF eat then good
+                if (isEdible(pStack)) {
+                    pStack.shrink(1);
+                    pLevel.playSound(pPlayer, pPos, SoundEvents.AMETHYST_BLOCK_STEP, SoundSource.BLOCKS, 1f, 1f);
+                    kingdom.addFoodValue((int) (getFoodNutrition(pStack) * 30));
+                } else {
+                    // if can't eat then no good
+                    if (pPlayer instanceof ServerPlayer serverPlayer) {
+                        CommandingTableMenu.setPlayer(pPlayer);
+                        MenuProvider provider = new SimpleMenuProvider(
+                                (containerId, playerInventory, _player) ->
+                                        new CommandingTableMenu(containerId, playerInventory, pPlayer),
+                                Component.translatable("npc.gui.commanding_table")
+                        );
+
+                        serverPlayer.openMenu(provider);
+                    }
+                    kingdom.updateNeededFood();
                 }
-                kingdom.updateNeededFood();
+            } else {
+
+
+                return InteractionResult.FAIL;
             }
-
         }
-            return InteractionResult.SUCCESS;
 
+        return InteractionResult.SUCCESS;
     }
 
 

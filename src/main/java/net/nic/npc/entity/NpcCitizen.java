@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -68,14 +69,14 @@ public class NpcCitizen extends PathfinderMob {
 
     }
 
-    public void setOwner(UUID id) {
-        KingdomInfo kingdom = KingdomManager.getKingdom(id);
+    public void setOwner(Player player) {
+        KingdomInfo kingdom = KingdomManager.getKingdom(player.getUUID(), (ServerLevel) player.level());
         kingdom.registerCitizen(this);
-        OWNER = id;
+        OWNER = player.getUUID();
     }
 
-    public KingdomInfo getKingdom(UUID id) {
-     return KingdomManager.getKingdom(id);
+    public KingdomInfo getKingdom(Player player) {
+     return KingdomManager.getKingdom(player.getUUID(), (ServerLevel) player.level());
     }
 
     public UUID getOwnerUUid() {

@@ -6,7 +6,9 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.nic.npc.entity.NpcCitizen;
 import net.nic.npc.NpcMain;
 import net.nic.npc.kingdom.KingdomInfo;
@@ -15,6 +17,7 @@ import net.nic.npc.menu.menus.CommandingTableMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static net.nic.npc.menu.Additions.MinimapRenderer.renderMinimap;
 
@@ -148,9 +151,8 @@ public class CommandingTableScreen extends AbstractContainerScreen<CommandingTab
     }
 
 
-    public static KingdomInfo getKingdom()  {
-        KingdomInfo kingdom = KingdomManager.getKingdom(CommandingTableMenu.getPlayer().getUUID());
-        return kingdom;
+    public KingdomInfo getKingdom()  {
+        return CommandingTableMenu.getKingdom();
     }
 
     public static int getDisplayMode() {

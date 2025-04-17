@@ -1,10 +1,13 @@
 package net.nic.npc.menu.menus;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.nic.npc.kingdom.KingdomInfo;
+import net.nic.npc.kingdom.KingdomManager;
 import net.nic.npc.menu.ModMenus;
 
 
@@ -13,7 +16,6 @@ public class CommandingTableMenu extends AbstractContainerMenu {
 
     public CommandingTableMenu(int containerId, Inventory playerInventory, Player player) {
         super(ModMenus.COMMAND_TABLE_MENU.get(), containerId);
-        this.player = player;
 
         // bottom-left corner
         int xOffset = 10;
@@ -38,6 +40,15 @@ public class CommandingTableMenu extends AbstractContainerMenu {
 
     public static Player getPlayer() {
         return player;
+    }
+
+    public static void setPlayer(Player player) {
+        CommandingTableMenu.player = player;
+    }
+
+    public static KingdomInfo getKingdom(){
+        KingdomInfo kingdom = KingdomManager.getKingdom(getPlayer().getUUID(), (ServerLevel) player.level());
+        return kingdom;
     }
 
     @Override

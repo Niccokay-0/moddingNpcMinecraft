@@ -113,11 +113,11 @@ public class EntityNpc extends PathfinderMob {
     public void transformToCitizen(Player player) {
         UUID id = player.getUUID();
 
-        if (KingdomManager.hasKingdom(id)) {
+        if (KingdomManager.hasKingdom(id, (ServerLevel) player.level())) {
             if (this.level().isClientSide) return;
 
             NpcCitizen newCitizen = new NpcCitizen(ModEntities.NPC_CITIZEN.get(),(ServerLevel) this.level());
-            newCitizen.setOwner(id);
+            newCitizen.setOwner(player);
 
                 // Set position and rotation
                 newCitizen.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
