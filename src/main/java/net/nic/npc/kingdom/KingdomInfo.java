@@ -5,6 +5,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.nic.npc.entity.NpcCitizen;
 
@@ -137,7 +138,9 @@ public class KingdomInfo {
 
         ListTag citizenList = new ListTag();
         for (NpcCitizen citizen : registeredCitizens) {
-            citizenList.add(citizen.saveToKingdomTag());
+            CompoundTag citizenTag = new CompoundTag();
+            citizenTag.putUUID("CitizenUUID", citizen.getUUID());
+            citizenList.add(citizenTag);
         }
         tag.put("Citizens", citizenList);
 
@@ -145,7 +148,6 @@ public class KingdomInfo {
     }
 
     public static KingdomInfo load(CompoundTag tag, ServerLevel level) {
-
         String kingdomName = tag.getString("KingdomName");
         UUID ownerUUID = tag.getUUID("OwnerUUID");
 
@@ -155,18 +157,23 @@ public class KingdomInfo {
         }
 
         KingdomInfo info = new KingdomInfo(kingdomName, level, owner);
-        info.registeredCitizens.clear();
+
         ListTag citizenList = tag.getList("Citizens", Tag.TAG_COMPOUND);
-        for (Tag citizenTag : citizenList) {
-            NpcCitizen citizen = NpcCitizen.loadFromKingdomTag((CompoundTag) citizenTag, level);
-            if (citizen != null) {
-                info.registerCitizen(citizen);
+        for (Tag element : citizenList) {
+            CompoundTag citizenTag = (CompoundTag) element;
+            UUID citizenUUID = citizenTag.getUUID("CitizenUUID");
+            Entity entity = level.getEntity(citizenUUID);
+            if (entity instanceof NpcCitizen npc) {
+                info.getRegisteredCitizens().add(npc);
             }
         }
+
         info.population = tag.getInt("Population");
         info.happiness = tag.getFloat("Happiness");
         info.foodValue = tag.getInt("FoodValue");
         info.neededFood = tag.getInt("NeededFood");
+
         return info;
     }
+
 }

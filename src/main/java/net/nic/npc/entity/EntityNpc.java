@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 
 import net.nic.npc.block.ModBlocks;
+import net.nic.npc.data.KingdomSaveData;
 import net.nic.npc.entity.ai.goal.GoToSpecialBlockGoal;
 import net.nic.npc.kingdom.KingdomInfo;
 import net.nic.npc.kingdom.KingdomManager;
@@ -118,7 +119,8 @@ public class EntityNpc extends PathfinderMob {
 
             NpcCitizen newCitizen = new NpcCitizen(ModEntities.NPC_CITIZEN.get(),(ServerLevel) this.level());
             newCitizen.setOwner(player);
-
+            KingdomSaveData saveData = KingdomSaveData.get((ServerLevel) player.level());
+            saveData.setDirty();
                 // Set position and rotation
                 newCitizen.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
                 // Copy over data

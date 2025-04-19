@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import net.nic.npc.data.KingdomSaveData;
 import net.nic.npc.kingdom.KingdomInfo;
 
 import net.nic.npc.kingdom.KingdomManager;
@@ -64,6 +65,7 @@ public class CommandingTableBlock extends Block {
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
         //  we're on the server side bro???
         if (!pLevel.isClientSide) {
+
             // WE ARE SO MAKE IT A SERVERLEVELE
             if (pLevel instanceof ServerLevel serverLevel) {
                 ItemStack pStack = pPlayer.getMainHandItem();
@@ -94,6 +96,8 @@ public class CommandingTableBlock extends Block {
             }
         }
 
+        KingdomSaveData saveData = KingdomSaveData.get((ServerLevel) pPlayer.level());
+        saveData.setDirty();
         return InteractionResult.SUCCESS;
     }
 

@@ -21,4 +21,5 @@ public class KingdomManager {
         KingdomSaveData saveData = KingdomSaveData.get(level);
         return saveData.getKingdoms().containsKey(playerUUID);
     }
+
 }

@@ -1,7 +1,6 @@
 package net.nic.npc.entity;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -43,7 +42,6 @@ public class NpcCitizen extends PathfinderMob {
     }
 
 
-
     @Override
     protected void registerGoals() {
 
@@ -77,7 +75,7 @@ public class NpcCitizen extends PathfinderMob {
     }
 
     public KingdomInfo getKingdom(Player player) {
-     return KingdomManager.getKingdom(player.getUUID(), (ServerLevel) player.level());
+        return KingdomManager.getKingdom(player.getUUID(), (ServerLevel) player.level());
     }
 
     public UUID getOwnerUUid() {
@@ -87,31 +85,38 @@ public class NpcCitizen extends PathfinderMob {
     public void setName(String name) {
         this.entityData.set(DATA_NAME, name);
     }
+
     public void setSurname(String surname) {
         this.entityData.set(DATA_SURNAME, surname);
     }
+
     public void setGender(String gender) {
         this.entityData.set(DATA_GENDER, gender);
     }
+
     public void setTextureVariant(int variant) {
         this.entityData.set(DATA_VARIANT, variant);
     }
+
     public void setProfession(String profession) {
         this.entityData.set(DATA_PROFESSION, profession);
     }
+
     public void setHappiness(float happiness) {
         this.entityData.set(DATA_HAPPINESS, happiness);
     }
+
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @Nullable SpawnGroupData pSpawnGroupData) {
         String gender = pickGender();
-        this.entityData.set(DATA_GENDER,gender);
+        this.entityData.set(DATA_GENDER, gender);
         this.entityData.set(DATA_NAME, pickRandomName(gender));
         this.entityData.set(DATA_SURNAME, pickRandomSurname());
         this.entityData.set(DATA_VARIANT, pickTexture());
         return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
     }
+
     @Override
     public void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
@@ -122,15 +127,20 @@ public class NpcCitizen extends PathfinderMob {
         //work and happiness
         pBuilder.define(DATA_PROFESSION, "Unemployed");
         pBuilder.define(DATA_HAPPINESS, 0.5f); // Range from 0.0f (sad) to 1.0f (happy)
-        OWNER = null;
+        if (level().isClientSide()) {
+            OWNER = level().players().get(0).getUUID();
+        }
 
     }
+
     public String getFName() {
         return this.entityData.get(DATA_NAME);
     }
+
     public String getSName() {
         return this.entityData.get(DATA_SURNAME);
     }
+
     public String getGender() {
         return this.entityData.get(DATA_GENDER);
     }
@@ -138,6 +148,7 @@ public class NpcCitizen extends PathfinderMob {
     public int getTextureVariant() {
         return this.entityData.get(DATA_VARIANT);
     }
+
     private String pickRandomName(String gender) {
         String[] maleNames = {
                 "Liam", "Noah", "Oliver", "Elijah", "James", "William", "Benjamin", "Lucas", "Henry", "Alexander", "Mason", "Michael", "Ethan", "Daniel", "Jacob", "Logan", "Jackson", "Levi", "Sebastian", "Mateo", "Jack", "Owen", "Theodore", "Aiden", "Samuel", "Joseph", "John", "David", "Wyatt", "Matthew", "Luke", "Asher", "Carter", "Julian", "Grayson", "Leo", "Jayden", "Gabriel", "Isaac", "Lincoln", "Anthony", "Hudson", "Dylan", "Ezra", "Thomas", "Charles", "Christopher", "Jaxon", "Maverick", "Josiah", "Andrew", "Elias", "Joshua", "Nathan", "Caleb", "Ryan", "Adrian", "Miles", "Eli", "Nolan", "Christian", "Aaron", "Cameron", "Ezekiel", "Colton", "Luca", "Landon", "Hunter", "Jonathan", "Santiago", "Axel", "Easton", "Cooper", "Jeremiah", "Angel", "Roman", "Connor", "Jameson", "Robert", "Greyson", "Jordan", "Ian", "Carson", "Jaxson", "Leonardo", "Nicholas", "Dominic", "Austin", "Everett", "Brooks", "Xavier", "Kai", "Jose", "Parker", "Adam", "Jace", "Wesley", "Kayden", "Silas", "Declan", "Weston", "Bennett", "Micah", "Blake", "Waylon", "Damian", "Brayden", "Vincent", "Ryder", "Tristan", "Bentley", "Luis", "George", "Kai", "Zion", "Carlos", "Max", "Ryker", "Ashton", "Diego", "Braxton", "Ivan", "Giovanni", "Rowan", "Harrison", "Jasper", "Brandon", "Jonah", "Kaiden", "Bryson", "Amir", "Kingston", "Archer", "Theo", "Enzo", "Kevin", "Judah", "Beau", "Tucker", "Finn", "Grant", "Emmett", "Emmanuel", "Corbin", "Rhett", "Edward", "August", "Nicolas", "Emilio", "Colin", "Tyler", "Phoenix", "Jude", "Alex", "Karter", "Francisco", "Paul", "Oscar", "Knox", "Dakota", "Leon", "Graham", "Malachi", "Hendrix", "Adonis", "Jesse", "Zane", "Travis", "Kaden", "Gianni", "Cody", "Rafael", "Remington", "Maxwell", "Andre", "Ali", "Arthur", "Erick", "Ronin", "Kairo", "Andy", "Orion", "Prince", "Avery", "Marco", "Gideon", "Fernando", "Brady", "Jayce", "Jake", "Tobias", "Pedro", "Zander", "Kash", "Israel", "Preston", "Marcus", "Kyrie", "Kenneth", "Jett", "Stephen", "Spencer", "Shane", "Nasir", "Holden", "Malik", "Troy", "Jaylen", "Kobe", "Bryce"
@@ -148,30 +159,36 @@ public class NpcCitizen extends PathfinderMob {
 
         String returnName = "";
 
-        if (gender.equals("Male"))    {
+        if (gender.equals("Male")) {
             returnName = maleNames[getRandom().nextInt(maleNames.length)];
-        } else if (gender.equals("Female"))   {
+        } else if (gender.equals("Female")) {
             returnName = femaleNames[getRandom().nextInt(maleNames.length)];
         }
         return returnName;
     }
+
     private String pickRandomSurname() {
         String[] surnames = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy", "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey", "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson", "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza", "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers", "Long", "Ross", "Foster", "Jimenez", "Powell", "Jenkins", "Perry", "Russell", "Sullivan", "Bell", "Coleman", "Butler", "Henderson", "Barnes", "Gonzales", "Fisher", "Vasquez", "Simmons", "Romero", "Jordan", "Patterson", "Alexander", "Hamilton", "Graham", "Reynolds", "Griffin", "Wallace", "Moreno", "West", "Cole", "Hayes", "Bryant", "Herrera", "Gibson", "Ellis", "Tran", "Medina", "Aguilar", "Stevens", "Murray", "Ford", "Castro", "Marshall", "Owens", "Harrison", "Fernandez", "Mcdonald", "Woods", "Washington", "Kennedy", "Wells", "Vargas", "Henry", "Chen", "Freeman", "Webb", "Tucker", "Guzman", "Burns", "Crawford", "Olson", "Simpson", "Porter", "Hunter", "Gordon", "Mendez", "Silva", "Shaw", "Snyder", "Mason", "Dixon", "Munoz", "Hunt", "Hicks", "Holmes", "Palmer", "Wagner", "Black", "Robertson", "Boyd", "Rose", "Stone", "Salazar", "Fox", "Warren", "Mills", "Meyer", "Rice", "Schmidt", "Garza", "Daniels", "Ferguson", "Nichols", "Stephens", "Soto", "Weaver", "Ryan", "Gardner", "Payne", "Grant", "Dunn", "Kelley", "Spencer", "Hawkins", "Arnold", "Pierce", "Vega", "Hansen", "Peters"};
         return surnames[getRandom().nextInt(surnames.length)];
     }
+
     private String pickGender() {
         String[] genders = {"Male", "Female"};
         return genders[this.getRandom().nextInt(genders.length)];
     }
+
     private int pickTexture() {
         return this.getRandom().nextInt(19) + 1;
     }
+
     public String getFullName() {
         return getFName() + " " + getSName();
     }
+
     public String getProfession() {
         return this.entityData.get(DATA_PROFESSION);
     }
+
     public float getHappiness() {
         return this.entityData.get(DATA_HAPPINESS) * 100;
     }
@@ -179,27 +196,29 @@ public class NpcCitizen extends PathfinderMob {
     public Boolean setRecruitable() {
         return recruitable = true;
     }
-    public int getHappinessColor(float happinessF)  {
-        if (getHappiness()/100 <= 0.25f){
+
+    public int getHappinessColor(float happinessF) {
+        if (getHappiness() / 100 <= 0.25f) {
             return 0xFF0000;
         }
 
-        if (getHappiness()/100 <= 0.5f && getHappiness() / 100 > 0.25f){
+        if (getHappiness() / 100 <= 0.5f && getHappiness() / 100 > 0.25f) {
             return 0xFFA500;
         }
 
-        if (getHappiness()/100 < 0.75f && getHappiness() / 100 > 0.5f){
+        if (getHappiness() / 100 < 0.75f && getHappiness() / 100 > 0.5f) {
             return 0xFFFF00;
         }
 
-        if (getHappiness() / 100 > 0.75f){
+        if (getHappiness() / 100 > 0.75f) {
             return 0x00FF00;
         } else
-        return 0xFFFFFF;
+            return 0xFFFFFF;
     }
+
     public int getProfessionColor(String string) {
 
-      return 0xD3D3D3;
+        return 0xD3D3D3;
     }
 
     public int getGenderColor(String gender) {
@@ -209,9 +228,9 @@ public class NpcCitizen extends PathfinderMob {
         }
         if (gender.equals("Female")) {
             return 0xFF8DA1;
-        }
-        else return 0xFFFFFF;
+        } else return 0xFFFFFF;
     }
+
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
@@ -220,7 +239,7 @@ public class NpcCitizen extends PathfinderMob {
         pCompound.putString("Gender", getGender());
         pCompound.putInt("TextureVariant", getTextureVariant());
         pCompound.putString("Profession", getProfession());
-        pCompound.putFloat("Happiness", getHappiness()/100);
+        pCompound.putFloat("Happiness", getHappiness() / 100);
     }
 
     @Override
@@ -273,38 +292,29 @@ public class NpcCitizen extends PathfinderMob {
 
     public static NpcCitizen loadFromKingdomTag(CompoundTag tag, ServerLevel level) {
         UUID uuid = tag.getUUID("UUID");
-
         for (NpcCitizen citizen : level.getEntitiesOfClass(NpcCitizen.class, level.getWorldBorder().getCollisionShape().bounds())) {
             if (citizen.getUUID().equals(uuid)) {
-                if (tag.hasUUID("OwnerUUID")) {
-                    citizen.OWNER = tag.getUUID("OwnerUUID");
-                }
-                if (tag.contains("Name")) {
+                if (tag.contains("Name", 8)) {
                     citizen.entityData.set(DATA_NAME, tag.getString("Name"));
                 }
-                if (tag.contains("Surname")) {
+                if (tag.contains("Surname", 8)) {
                     citizen.entityData.set(DATA_SURNAME, tag.getString("Surname"));
                 }
-                if (tag.contains("Gender")) {
+                if (tag.contains("Gender", 8)) {
                     citizen.entityData.set(DATA_GENDER, tag.getString("Gender"));
                 }
-                if (tag.contains("Variant")) {
-                    citizen.entityData.set(DATA_VARIANT, tag.getInt("Variant"));
+                if (tag.contains("TextureVariant", 3)) {
+                    citizen.entityData.set(DATA_VARIANT, tag.getInt("TextureVariant"));
                 }
-                if (tag.contains("Profession")) {
+                if (tag.contains("Profession", 8)) {
                     citizen.entityData.set(DATA_PROFESSION, tag.getString("Profession"));
                 }
-                if (tag.contains("Happiness")) {
+                if (tag.contains("Happiness", 5)) { // 5 = float
                     citizen.entityData.set(DATA_HAPPINESS, tag.getFloat("Happiness"));
                 }
-                if (tag.contains("Recruitable")) {
-                    citizen.recruitable = tag.getBoolean("Recruitable");
-                }
-
-                return citizen;
             }
+            return citizen;
         }
-
         return null;
     }
 }
