@@ -21,7 +21,7 @@ public class KingdomSaveData extends SavedData {
     public static final SavedData.Factory<KingdomSaveData> FACTORY = new SavedData.Factory<>(
             KingdomSaveData::new,
             (tag, lookup) -> load(tag, levelForLoading),
-            DataFixTypes.SAVED_DATA_SCOREBOARD // <-- This is the missing third parameter
+            DataFixTypes.SAVED_DATA_SCOREBOARD
     );
 
     public static KingdomSaveData get(ServerLevel level) {
