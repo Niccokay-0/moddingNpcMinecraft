@@ -3,9 +3,9 @@ package net.nic.npc.kingdom;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.nic.npc.entity.NpcCitizen;
 
 import java.util.ArrayList;
@@ -130,23 +130,22 @@ public class KingdomInfo {
     public CompoundTag save(CompoundTag tag) {
         tag.putString("KingdomName", kingdomName);
         tag.putUUID("OwnerUUID", owner.getUUID());
-
         tag.putInt("Population", getPopulation());
         tag.putFloat("Happiness", happiness);
         tag.putInt("FoodValue", foodValue);
         tag.putInt("NeededFood", neededFood);
 
-        // Optionally save citizen names for debugging/logging (not full entities)
         ListTag citizenList = new ListTag();
         for (NpcCitizen citizen : registeredCitizens) {
-            citizenList.add(StringTag.valueOf(citizen.getName().getString()));
+            citizenList.add(citizen.saveToKingdomTag());
         }
-        tag.put("CitizenNames", citizenList);
+        tag.put("Citizens", citizenList);
 
         return tag;
     }
 
     public static KingdomInfo load(CompoundTag tag, ServerLevel level) {
+
         String kingdomName = tag.getString("KingdomName");
         UUID ownerUUID = tag.getUUID("OwnerUUID");
 
@@ -156,12 +155,18 @@ public class KingdomInfo {
         }
 
         KingdomInfo info = new KingdomInfo(kingdomName, level, owner);
+        info.registeredCitizens.clear();
+        ListTag citizenList = tag.getList("Citizens", Tag.TAG_COMPOUND);
+        for (Tag citizenTag : citizenList) {
+            NpcCitizen citizen = NpcCitizen.loadFromKingdomTag((CompoundTag) citizenTag, level);
+            if (citizen != null) {
+                info.registerCitizen(citizen);
+            }
+        }
         info.population = tag.getInt("Population");
         info.happiness = tag.getFloat("Happiness");
         info.foodValue = tag.getInt("FoodValue");
         info.neededFood = tag.getInt("NeededFood");
-
-        // Citizen list loading can be implemented later with actual entity data if needed
         return info;
     }
 }

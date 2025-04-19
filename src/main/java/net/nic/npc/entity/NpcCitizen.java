@@ -1,6 +1,7 @@
 package net.nic.npc.entity;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -220,8 +221,6 @@ public class NpcCitizen extends PathfinderMob {
         pCompound.putInt("TextureVariant", getTextureVariant());
         pCompound.putString("Profession", getProfession());
         pCompound.putFloat("Happiness", getHappiness()/100);
-
-
     }
 
     @Override
@@ -258,5 +257,55 @@ public class NpcCitizen extends PathfinderMob {
 
     }
 
+    public CompoundTag saveToKingdomTag() {
+        CompoundTag tag = new CompoundTag();
+        tag.putUUID("UUID", this.getUUID());
+        tag.putUUID("OwnerUUID", OWNER != null ? OWNER : new UUID(0, 0));
+        tag.putString("Name", this.entityData.get(DATA_NAME));
+        tag.putString("Surname", this.entityData.get(DATA_SURNAME));
+        tag.putString("Gender", this.entityData.get(DATA_GENDER));
+        tag.putInt("Variant", this.entityData.get(DATA_VARIANT));
+        tag.putString("Profession", this.entityData.get(DATA_PROFESSION));
+        tag.putFloat("Happiness", this.entityData.get(DATA_HAPPINESS));
+        tag.putBoolean("Recruitable", this.recruitable);
+        return tag;
+    }
+
+    public static NpcCitizen loadFromKingdomTag(CompoundTag tag, ServerLevel level) {
+        UUID uuid = tag.getUUID("UUID");
+
+        for (NpcCitizen citizen : level.getEntitiesOfClass(NpcCitizen.class, level.getWorldBorder().getCollisionShape().bounds())) {
+            if (citizen.getUUID().equals(uuid)) {
+                if (tag.hasUUID("OwnerUUID")) {
+                    citizen.OWNER = tag.getUUID("OwnerUUID");
+                }
+                if (tag.contains("Name")) {
+                    citizen.entityData.set(DATA_NAME, tag.getString("Name"));
+                }
+                if (tag.contains("Surname")) {
+                    citizen.entityData.set(DATA_SURNAME, tag.getString("Surname"));
+                }
+                if (tag.contains("Gender")) {
+                    citizen.entityData.set(DATA_GENDER, tag.getString("Gender"));
+                }
+                if (tag.contains("Variant")) {
+                    citizen.entityData.set(DATA_VARIANT, tag.getInt("Variant"));
+                }
+                if (tag.contains("Profession")) {
+                    citizen.entityData.set(DATA_PROFESSION, tag.getString("Profession"));
+                }
+                if (tag.contains("Happiness")) {
+                    citizen.entityData.set(DATA_HAPPINESS, tag.getFloat("Happiness"));
+                }
+                if (tag.contains("Recruitable")) {
+                    citizen.recruitable = tag.getBoolean("Recruitable");
+                }
+
+                return citizen;
+            }
+        }
+
+        return null;
+    }
 }
 
